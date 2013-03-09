@@ -2,7 +2,7 @@
     "name":"cmsx/auth",
     "version":"0.0.1",
     "type":"library",
-    "description":"CMSx Auth component",
+    "description":"CMSx FW Auth component",
     "homepage":"http://cmsx.ru",
     "license":"MIT",
     "authors":[
@@ -15,7 +15,7 @@
     "require":{
         "php":">=5.3.0",
         "ext-hash":"*",
-        "cmsx/db":"dev-master"
+        "cmsx/fw":"dev-master"
     },
     "autoload":{
         "psr-0":{
