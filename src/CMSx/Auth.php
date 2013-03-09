@@ -13,10 +13,30 @@ class Auth
     self::ERR_SESSION => 'Сессия не запущена'
   );
 
+  /** @var DB */
+  protected $manager;
+
   /** Инициализация авторизации */
-  public static function Init($session_autostart = true)
+  public function __construct($manager = null, $session_autostart = true)
   {
+    if (!is_null($manager)) {
+      $this->setManager($manager);
+    }
+
     self::CheckSessionStarted($session_autostart);
+  }
+
+  public function setManager(DB $manager)
+  {
+    $this->manager = $manager;
+
+    return $this;
+  }
+
+  /** @return \CMSx\DB */
+  public function getManager()
+  {
+    return $this->manager;
   }
 
   /** Хеш от логина и пароля */
@@ -48,7 +68,8 @@ class Auth
     $sid = session_id();
     if (empty($sid)) {
       if ($autostart) {
-        session_start();
+        @session_start();
+        static::CheckSessionStarted();
       } else {
         static::ThrowError(self::ERR_SESSION);
       }
