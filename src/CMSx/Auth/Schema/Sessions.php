@@ -2,16 +2,20 @@
 
 namespace CMSx\Auth\Schema;
 
-use CMSx\DB\Schema;
 use CMSx\DB;
+use CMSx\DB\Schema;
 
 class Sessions extends Schema
 {
+  public function getTable()
+  {
+    return 'sessions';
+  }
+
   protected function init()
   {
-    $this->table = 'sessions';
-    $this->query = DB::Create($this->table)
-      ->addChar('token', 250)
+    $this->getQuery()
+      ->addChar('token')
       ->addUniqueIndex('token')
       ->addForeignId('user_id')
       ->addForeignKey('user_id', 'users', 'id', DB::FOREIGN_CASCADE)

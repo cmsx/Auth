@@ -2,15 +2,19 @@
 
 namespace CMSx\Auth\Schema;
 
-use CMSx\DB\Schema;
 use CMSx\DB;
+use CMSx\DB\Schema;
 
 class Users extends Schema
 {
+  public function getTable()
+  {
+    return 'users';
+  }
+
   protected function init()
   {
-    $this->table = 'users';
-    $this->query = DB::Create($this->table)
+    $this->getQuery()
       ->addId()
       ->addBool('is_active')
       ->addInt('role')
@@ -23,10 +27,5 @@ class Users extends Schema
       ->setType(DB::TYPE_InnoDB)
       ->addIndex('is_active', 'login', 'password')
     ;
-  }
-
-  public function fillTable()
-  {
-
   }
 }
