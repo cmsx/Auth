@@ -14,6 +14,9 @@ class User extends Item
   /** Ошибка - роль не существует */
   const ERR_WRONG_ROLE = 10;
 
+  /** Оригинал пароля, при его смене */
+  protected $passchange;
+
   /** Таблица с сессиями */
   protected static $sessions = 'sessions';
 
@@ -35,6 +38,26 @@ class User extends Item
   function getTable()
   {
     return 'users';
+  }
+
+  public function setPassword($password)
+  {
+    $this->passchange = $password;
+
+    return $this;
+  }
+
+  public function getPassword()
+  {
+    return $this->passchange
+      ? $this->getHash($this->passchange)
+      : $this->get('password');
+  }
+
+  /** Хеширование пароля */
+  public function getHash($password)
+  {
+    return static::HashPassword($this->get('login'), $password);
   }
 
   /** Проверка наличия роли у пользователя */
@@ -73,14 +96,6 @@ class User extends Item
   public function isAdmin()
   {
     return $this->hasRole(static::ROLE_ADMIN);
-  }
-
-  public function load($id = null)
-  {
-    parent::load($id);
-    unset($this->vars['password']);
-
-    return $this;
   }
 
   /** Список возможных ролей пользователя */
@@ -182,12 +197,8 @@ class User extends Item
 
   protected function beforeSave($is_insert)
   {
-    if ($p = $this->get('password')) {
-      $this->set(
-        'password',
-        static::HashPassword($this->get('login'), $p)
-      );
+    if ($this->passchange) {
+      $this->set('password', $this->getHash($this->passchange));
     }
   }
-
 }
